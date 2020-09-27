@@ -1,0 +1,134 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cart
+    app.kubernetes.io/instance: coolstore-argo
+  name: cart
+spec:
+  clusterIP: 172.30.55.27
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: 8443-tcp
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  - name: 8778-tcp
+    port: 8778
+    protocol: TCP
+    targetPort: 8778
+  selector:
+    app: cart
+    deploymentconfig: cart
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: catalog
+    app.kubernetes.io/instance: coolstore-argo
+  name: catalog
+spec:
+  clusterIP: 172.30.137.24
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: 8443-tcp
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  - name: 8778-tcp
+    port: 8778
+    protocol: TCP
+    targetPort: 8778
+  selector:
+    app: catalog
+    deploymentconfig: catalog
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: coolstore-argo
+    project: coolstore-ui
+    provider: nodeshift
+    version: 1.0.0
+  name: coolstore-ui
+spec:
+  clusterIP: 172.30.37.156
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    project: coolstore-ui
+    provider: nodeshift
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: inventory
+    app.kubernetes.io/instance: coolstore-argo
+  name: inventory
+spec:
+  clusterIP: 172.30.47.197
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: 8443-tcp
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  - name: 8778-tcp
+    port: 8778
+    protocol: TCP
+    targetPort: 8778
+  selector:
+    app: inventory
+    deploymentconfig: inventory
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: order
+    app.kubernetes.io/instance: coolstore-argo
+  name: order
+spec:
+  clusterIP: 172.30.171.64
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: 8443-tcp
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  - name: 8778-tcp
+    port: 8778
+    protocol: TCP
+    targetPort: 8778
+  selector:
+    app: order
+    deploymentconfig: order
+  sessionAffinity: None
+  type: ClusterIP

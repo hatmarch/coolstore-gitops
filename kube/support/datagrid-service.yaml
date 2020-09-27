@@ -91,7 +91,6 @@ spec:
       from:
         kind: ImageStreamTag
         name: datagrid-service:10.0.0.Beta3
-        namespace: coolstore-test
     type: ImageChange
 ---
 apiVersion: v1

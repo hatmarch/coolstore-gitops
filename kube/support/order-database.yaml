@@ -87,7 +87,6 @@ spec:
       from:
         kind: ImageStreamTag
         name: order-database:4.0
-        namespace: coolstore-test
     type: ImageChange
 ---
 apiVersion: v1

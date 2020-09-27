@@ -1,0 +1,298 @@
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: cart
+    app.kubernetes.io/instance: coolstore-argo
+    app.kubernetes.io/part-of: focus
+  name: cart
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: cart
+    deploymentconfig: cart
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: cart
+        deploymentconfig: cart
+    spec:
+      containers:
+      - env:
+        - name: mp.messaging.outgoing.orders.bootstrap.servers
+          valueFrom:
+            configMapKeyRef:
+              key: orders-topic-server
+              name: coolstore-topics-cfg
+        image: docker.io/mhildema/cart:v1
+        imagePullPolicy: Always
+        name: cart
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: catalog
+    app.kubernetes.io/instance: coolstore-argo
+    app.kubernetes.io/part-of: focus
+  name: catalog
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: catalog
+    deploymentconfig: catalog
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: catalog
+        deploymentconfig: catalog
+    spec:
+      containers:
+      - image: docker.io/mhildema/catalog:v1
+        imagePullPolicy: Always
+        name: catalog
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    app.openshift.io/connects-to: inventory,order,catalog,cart
+  labels:
+    app: coolstore-ui
+    app.kubernetes.io/instance: coolstore-argo
+    app.kubernetes.io/part-of: focus
+    project: coolstore-ui
+    provider: nodeshift
+    version: 1.0.0
+  name: coolstore-ui
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    app: coolstore-ui
+    project: coolstore-ui
+    provider: nodeshift
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: coolstore-ui
+        project: coolstore-ui
+        provider: nodeshift
+        version: 1.0.0
+    spec:
+      containers:
+      - image: docker.io/mhildema/coolstore-ui:v1
+        imagePullPolicy: Always
+        name: coolstore-ui
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources: {}
+        securityContext:
+          privileged: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        # env:
+        #   - name: OPENSHIFT_BUILD_NAMESPACE
+        #     value: coolstore-test  
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: inventory
+    app.kubernetes.io/instance: coolstore-argo
+    app.kubernetes.io/part-of: focus
+  name: inventory
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: inventory
+    deploymentconfig: inventory
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: inventory
+        deploymentconfig: inventory
+    spec:
+      containers:
+      - env:
+        - name: QUARKUS_PROFILE
+          value: prod
+        image: mhildema/inventory:v1
+        imagePullPolicy: Always
+        name: inventory
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: order
+    app.kubernetes.io/instance: coolstore-argo
+    app.kubernetes.io/part-of: focus
+  name: order
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: order
+    deploymentconfig: order
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: order
+        deploymentconfig: order
+    spec:
+      containers:
+      - env:
+        - name: mp.messaging.incoming.orders.bootstrap.servers
+          valueFrom:
+            configMapKeyRef:
+              key: orders-topic-server
+              name: coolstore-topics-cfg
+        - name: mp.messaging.incoming.payments.bootstrap.servers
+          valueFrom:
+            configMapKeyRef:
+              key: payments-topic-server
+              name: coolstore-topics-cfg
+        image: docker.io/mhildema/order:v1
+        imagePullPolicy: Always
+        name: order
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
