@@ -1,0 +1,88 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: inventory-database
+    app.kubernetes.io/instance: coolstore-argo
+  name: inventory-database
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: inventory-database
+    deploymentconfig: inventory-database
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: inventory-database
+        deploymentconfig: inventory-database
+    spec:
+      containers:
+      - env:
+        - name: POSTGRESQL_DATABASE
+          value: inventory
+        - name: POSTGRESQL_PASSWORD
+          value: mysecretpassword
+        - name: POSTGRESQL_USER
+          value: inventory
+        image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:a145b5c2f38e25e832bef0be3a01a92a1f62d5c39c5edfcf074332f8642cb68f
+        imagePullPolicy: IfNotPresent
+        name: inventory-database
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - inventory-database
+      from:
+        kind: ImageStreamTag
+        name: postgresql:10
+        namespace: openshift
+    type: ImageChange
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: inventory-database
+    app.kubernetes.io/instance: coolstore-argo
+  name: inventory-database
+spec:
+  clusterIP: 172.30.220.228
+  ports:
+  - name: 5432-tcp
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: inventory-database
+    deploymentconfig: inventory-database
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

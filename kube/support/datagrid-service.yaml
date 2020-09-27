@@ -1,0 +1,145 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: datagrid-service
+    app.kubernetes.io/instance: coolstore-argo
+  name: datagrid-service
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations:
+      openshift.io/imported-from: jboss/infinispan-server:10.0.0.Beta3
+    from:
+      kind: DockerImage
+      name: jboss/infinispan-server:10.0.0.Beta3
+    generation: 2
+    importPolicy: {}
+    name: 10.0.0.Beta3
+    referencePolicy:
+      type: Source
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: datagrid-service
+    app.kubernetes.io/instance: coolstore-argo
+  name: datagrid-service
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: datagrid-service
+    deploymentconfig: datagrid-service
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: datagrid-service
+        deploymentconfig: datagrid-service
+    spec:
+      containers:
+      - image: jboss/infinispan-server@sha256:e273ee003839cba43206f7efcf72724bdb13baef36956088a1871cb2a5278fc0
+        imagePullPolicy: IfNotPresent
+        name: datagrid-service
+        ports:
+        - containerPort: 57600
+          protocol: TCP
+        - containerPort: 7600
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8181
+          protocol: TCP
+        - containerPort: 8888
+          protocol: TCP
+        - containerPort: 9990
+          protocol: TCP
+        - containerPort: 11211
+          protocol: TCP
+        - containerPort: 11222
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - datagrid-service
+      from:
+        kind: ImageStreamTag
+        name: datagrid-service:10.0.0.Beta3
+        namespace: coolstore-test
+    type: ImageChange
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: datagrid-service
+    app.kubernetes.io/instance: coolstore-argo
+  name: datagrid-service
+spec:
+  clusterIP: 172.30.220.111
+  ports:
+  - name: 7600-tcp
+    port: 7600
+    protocol: TCP
+    targetPort: 7600
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: 8181-tcp
+    port: 8181
+    protocol: TCP
+    targetPort: 8181
+  - name: 8888-tcp
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  - name: 9990-tcp
+    port: 9990
+    protocol: TCP
+    targetPort: 9990
+  - name: 11211-tcp
+    port: 11211
+    protocol: TCP
+    targetPort: 11211
+  - name: 11222-tcp
+    port: 11222
+    protocol: TCP
+    targetPort: 11222
+  - name: 57600-tcp
+    port: 57600
+    protocol: TCP
+    targetPort: 57600
+  selector:
+    app: datagrid-service
+    deploymentconfig: datagrid-service
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

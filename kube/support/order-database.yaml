@@ -1,0 +1,113 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: order-database
+    app.kubernetes.io/instance: coolstore-argo
+  name: order-database
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations:
+      openshift.io/imported-from: mongo:4.0
+    from:
+      kind: DockerImage
+      name: mongo:4.0
+    generation: 2
+    importPolicy: {}
+    name: "4.0"
+    referencePolicy:
+      type: Source
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: order-database
+    app.kubernetes.io/instance: coolstore-argo
+  name: order-database
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: order-database
+    deploymentconfig: order-database
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: order-database
+        deploymentconfig: order-database
+    spec:
+      containers:
+      - image: mongo@sha256:6c66ebfb619f06fa2eac6e3ed75ca139e4146bd074de6d44d5d21731c50e13bf
+        imagePullPolicy: IfNotPresent
+        name: order-database
+        ports:
+        - containerPort: 27017
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data/configdb
+          name: order-database-volume-1
+        - mountPath: /data/db
+          name: order-database-volume-2
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: order-database-volume-1
+      - emptyDir: {}
+        name: order-database-volume-2
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - order-database
+      from:
+        kind: ImageStreamTag
+        name: order-database:4.0
+        namespace: coolstore-test
+    type: ImageChange
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: order-database
+    app.kubernetes.io/instance: coolstore-argo
+  name: order-database
+spec:
+  clusterIP: 172.30.226.100
+  ports:
+  - name: 27017-tcp
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: order-database
+    deploymentconfig: order-database
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
