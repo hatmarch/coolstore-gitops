@@ -165,9 +165,9 @@ spec:
           privileged: false
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        # env:
-        #   - name: OPENSHIFT_BUILD_NAMESPACE
-        #     value: coolstore-test  
+        env:
+          - name: OPENSHIFT_BUILD_NAMESPACE
+            value: argocd-demo-stage
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
