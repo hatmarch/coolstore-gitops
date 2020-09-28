@@ -38,7 +38,7 @@ spec:
           value: mysecretpassword
         - name: POSTGRESQL_USER
           value: catalog
-        image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:a145b5c2f38e25e832bef0be3a01a92a1f62d5c39c5edfcf074332f8642cb68f
+        image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:10
         imagePullPolicy: IfNotPresent
         name: catalog-database
         ports:
@@ -53,17 +53,6 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
   test: false
-  triggers:
-  - type: ConfigChange
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - catalog-database
-      from:
-        kind: ImageStreamTag
-        name: postgresql:10
-        namespace: openshift
-    type: ImageChange
 ---
 apiVersion: v1
 kind: Service
