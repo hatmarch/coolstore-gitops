@@ -31,7 +31,7 @@ spec:
         deploymentconfig: order-database
     spec:
       containers:
-      - image: image-registry.openshift-image-registry.svc:5000/order-database:4.0
+      - image: mongo:4.0
         imagePullPolicy: IfNotPresent
         name: order-database
         ports:
