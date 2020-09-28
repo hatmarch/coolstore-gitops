@@ -167,7 +167,9 @@ spec:
         terminationMessagePolicy: File
         env:
           - name: OPENSHIFT_BUILD_NAMESPACE
-            value: argocd-demo-stage
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
