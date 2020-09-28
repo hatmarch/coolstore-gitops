@@ -73,7 +73,6 @@ metadata:
     app.kubernetes.io/instance: coolstore-argo
   name: catalog-database
 spec:
-  clusterIP: 172.30.39.71
   ports:
   - name: 5432-tcp
     port: 5432
