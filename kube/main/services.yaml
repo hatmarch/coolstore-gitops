@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/instance: coolstore-argo
   name: cart
 spec:
-  clusterIP: 172.30.55.27
   ports:
   - name: 8080-tcp
     port: 8080
@@ -35,7 +34,6 @@ metadata:
     app.kubernetes.io/instance: coolstore-argo
   name: catalog
 spec:
-  clusterIP: 172.30.137.24
   ports:
   - name: 8080-tcp
     port: 8080
@@ -65,7 +63,6 @@ metadata:
     version: 1.0.0
   name: coolstore-ui
 spec:
-  clusterIP: 172.30.37.156
   ports:
   - name: http
     port: 8080
@@ -85,7 +82,6 @@ metadata:
     app.kubernetes.io/instance: coolstore-argo
   name: inventory
 spec:
-  clusterIP: 172.30.47.197
   ports:
   - name: 8080-tcp
     port: 8080
@@ -113,7 +109,6 @@ metadata:
     app.kubernetes.io/instance: coolstore-argo
   name: order
 spec:
-  clusterIP: 172.30.171.64
   ports:
   - name: 8080-tcp
     port: 8080
