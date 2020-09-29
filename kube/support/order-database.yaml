@@ -56,16 +56,6 @@ spec:
       - emptyDir: {}
         name: order-database-volume-2
   test: false
-  triggers:
-  - type: ConfigChange
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - order-database
-      from:
-        kind: ImageStreamTag
-        name: order-database:4.0
-    type: ImageChange
 ---
 apiVersion: v1
 kind: Service
