@@ -39,6 +39,11 @@ spec:
             configMapKeyRef:
               key: orders-topic-server
               name: coolstore-topics-cfg
+        - name: mp.messaging.outgoing.orders.topic
+          valueFrom:
+            configMapKeyRef:
+                key: orders-topic-name
+                name: coolstore-topics-cfg
         image: docker.io/mhildema/cart:v1
         imagePullPolicy: Always
         name: cart
@@ -279,6 +284,16 @@ spec:
             configMapKeyRef:
               key: payments-topic-server
               name: coolstore-topics-cfg
+        - name: mp.messaging.incoming.orders.topic
+          valueFrom:
+            configMapKeyRef:
+                key: orders-topic-name
+                name: coolstore-topics-cfg
+        - name: mp.messaging.incoming.payments.topic
+          valueFrom:
+            configMapKeyRef:
+                key: payments-topic-name
+                name: coolstore-topics-cfg
         image: docker.io/mhildema/order:v1
         imagePullPolicy: Always
         name: order

@@ -53,6 +53,16 @@ spec:
               configMapKeyRef:
                 key: payments-topic-server
                 name: coolstore-topics-cfg
+          - name: mp.messaging.incoming.orders.topic
+            valueFrom:
+              configMapKeyRef:
+                  key: orders-topic-name
+                  name: coolstore-topics-cfg
+          - name: mp.messaging.outgoing.payments.topic
+            valueFrom:
+                configMapKeyRef:
+                  key: payments-topic-name
+                  name: coolstore-topics-cfg
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

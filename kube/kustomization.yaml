@@ -1,7 +1,43 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 # namespace: argocd
-bases:
+resources:
   - ./support
   - ./main  
   - ./payment
+patchesStrategicMerge:
+  - cm-patch.yaml
+# patchesStrategicMerge:
+#   - topics.yaml
+# patchesJSON6902:
+#   - target:
+#       group: apps.openshift.io
+#       version: v1
+#       kind: DeploymentConfig
+#       name: cart
+#     path: topic-env-patch.yaml
+#   - target:
+#       group: apps.openshift.io
+#       version: v1
+#       kind: DeploymentConfig
+#       name: order
+#     path: topic-env-patch.yaml    
+#   - target:
+#       group: apps.openshift.io
+#       version: v1
+#       kind: DeploymentConfig
+#       name: payment
+#     path: topic-env-patch.yaml    
+    # patch: |-
+    #   - op: add
+    #     path: /spec/template/spec/containers/0/env
+    #     value:
+    #     - name: mp.messaging.outgoing.orders.topic
+    #       value: orders-patch
+    #     - name: mp.messaging.outgoing.orders.bootstrap.servers
+    #       valueFrom:
+    #         configMapKeyRef:
+    #           key: orders-topic-server
+    #           name: coolstore-topics-cfg1
+    #       # name: mp.messaging.outgoing.orders.topic
+    #       # value: orders-patch

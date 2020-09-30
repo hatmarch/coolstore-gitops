@@ -6,3 +6,5 @@ metadata:
 data:
   orders-topic-server: 'my-cluster-kafka-bootstrap.argocd-demo-support:9092'
   payments-topic-server: 'my-cluster-kafka-bootstrap.argocd-demo-support:9092'
+  orders-topic-name: 'orders-cfg'
+  payments-topic-name: 'payments-cfg'
