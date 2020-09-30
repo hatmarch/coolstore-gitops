@@ -4,7 +4,3 @@ kind: Kustomization
 resources:
     - services.yaml
     - deployment.yaml
-images:
-    - name: payment/image
-      newName: docker.io/mhildema/payment
-      newTag: v1
