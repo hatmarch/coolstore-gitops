@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/instance: coolstore-argo
   name: datagrid-service
 spec:
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     app: datagrid-service
