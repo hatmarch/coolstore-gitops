@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/part-of: focus
   name: cart
 spec:
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     app: cart
@@ -72,6 +73,7 @@ metadata:
     app.kubernetes.io/part-of: focus
   name: catalog
 spec:
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     app: catalog
@@ -130,6 +132,7 @@ metadata:
     version: 1.0.0
   name: coolstore-ui
 spec:
+  replicas: 1
   revisionHistoryLimit: 2
   selector:
     app: coolstore-ui
@@ -188,6 +191,7 @@ metadata:
     app.kubernetes.io/part-of: focus
   name: inventory
 spec:
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     app: inventory
@@ -244,6 +248,7 @@ metadata:
     app.kubernetes.io/part-of: focus
   name: order
 spec:
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     app: order
