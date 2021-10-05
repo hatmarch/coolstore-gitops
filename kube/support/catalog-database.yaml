@@ -38,7 +38,7 @@ spec:
           value: mysecretpassword
         - name: POSTGRESQL_USER
           value: catalog
-        image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:10
+        image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:10-el8
         imagePullPolicy: IfNotPresent
         name: catalog-database
         ports:
